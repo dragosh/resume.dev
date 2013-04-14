@@ -1,0 +1,11 @@
+node_modules
+dist
+.tmp
+__tmp
+public_html/data
+.sass-cache
+.git
+.hg
+.DS_Store
+Thumbs.db
+public_html/scripts/components
