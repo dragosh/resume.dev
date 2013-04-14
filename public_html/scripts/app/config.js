@@ -37,6 +37,9 @@ require.config({
 		'vendors/jquery.imagesloaded': {
 			deps: ['jquery']
 		},
+		'vendors/jquery.easing': {
+			deps: ['jquery']
+		},
 		'vendors/jquery.timemachine': {
 			deps: ['jquery']
 		},

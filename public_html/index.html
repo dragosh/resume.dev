@@ -14,16 +14,23 @@
 
        <a class="avatar" href="/"><img src="http://www.gravatar.com/avatar/4a7592258e8335237840645ed7fafb1b" alt=""></a>
         <ul>
-            <li><a href="projects" class="icon-symbol" rel="bag"><a class="text" href="projects">Projects</a></li>
-            <li><a href="skils" class="icon-symbol" rel="app"><a class="text" href="skills">Skils</a></li>
-            <li><a href="education" class="icon-symbol" rel="college"><a class="text" href="education">Education</a></li>
-            <li><a href="contact" class="icon-symbol" rel="mail"><a class="text" href="contact">Contact</a></li>
+            <li><a href="projects" class="icon-symbol" rel="bag" title="Projects"></a></li>
+            <li><a href="skills" class="icon-symbol" rel="app" title="skills"></a></li>
+            <li><a href="education" class="icon-symbol" rel="college" title="Education"></a></li>
+            <li><a href="contact" class="icon-symbol" rel="mail" title="Contact"></a></li>
         </ul>
 
     </div>
-    <div role="main" id="main">
+    <div role="main" id="main"></div>
 
-    </div>
+        <script id="controls-template" type="template">
+        <div id="controlsWrapper">
+            <a href="#" class="icon-symbol up disabled" rel="up"></a>
+            <a href="#" class="icon-symbol down disabled" rel="down"></a>
+            <a href="#" class="icon-symbol left disabled" rel="left"></a>
+            <a href="#" class="icon-symbol right disabled" rel="right"></a>
+        </div>
+        </script>
 
         <script data-main="scripts/app/config.js" src="scripts/components/requirejs/require.js"></script>
     </body>

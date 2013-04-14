@@ -3,6 +3,7 @@ define([
     'helpers/handlebars_helper', // template engine helpers
     'layoutmanager', // backbone view manager plugin
     'vendors/jquery.imagesloaded',
+    'vendors/jquery.easing',
     'vendors/jquery.rslider',
     'vendors/jquery.rcarousel',
     'vendors/jquery.timemachine'

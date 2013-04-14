@@ -21,6 +21,8 @@
 
 //Vars
 $sidebar_width: 180;
+$page_width:809px;
+$page_height:462px;
 
 @include font-face(LigatureSymbols, "fonts/LigatureSymbols-2.09");
 
@@ -30,35 +32,27 @@ $sidebar_width: 180;
   color: #fff;
   font-size:em(24);
   text-decoration: none;
-  @include prefixer(text-rendering, optimizeLegibility, webkit moz ms o spec);
-  @include prefixer(font-smoothing, antialiased, webkit moz ms o spec);
 }
 
 html, body {
   height: 100%;
   min-height: 100%;
-
 }
 
 body {
   min-width: 290px;
-  -webkit-font-smoothing: antialiased;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  text-size-adjust: 100%;
   background: transparent url("../images/body.jpg") no-repeat center center fixed;
+  @include prefixer(text-rendering, optimizeLegibility, webkit moz ms o spec);
+  @include prefixer(font-smoothing, antialiased, webkit moz ms o spec);
+  @include prefixer(text-size-adjust, 100%, webkit moz ms o spec);
   @include prefixer(background-size, cover, webkit moz ms o spec);
   color: #666;
   font-family: $helvetica;
   font-size: em(12, 10);
-  //@include retina-image("../images/bg", 200px 200px,"jpg");
-
-
 }
 #nav {
   //display: none;
   a.close{
-
     font-size: em(32);
     display: block;
     padding: .4em;
@@ -73,29 +67,27 @@ body {
     display: block;
     width: 55px;
     height:55px;
-
     img{
       width: 100%;
       @include border-top-radius(10px);;
       //border-radius:10px;
     }
   }
+
+  @include linear-gradient(to right, #d0c9c9, #f7f5f5);
+
   z-index: 1000;
   height: 100%;
   position: fixed;
   height: 90%;
   border-radius: 10px;
-
   margin: 2em 0;
   opacity: .8;
-  @include linear-gradient(to right, #d0c9c9, #f7f5f5);
   width: em($sidebar_width / 4);
   left: 20px;
-  //top:2em;
   overflow: hidden;
   box-shadow: 0 0 15px rgba(0,0,0, .6);
   //@include debug();
-  @include transition (all .3s ease-in-out);
   &:hover{
     opacity: .9;
   }
@@ -103,59 +95,45 @@ body {
     width: em($sidebar_width);
   }
   ul {
-
     clear:both;
     display: block;
     width: 100%;
     list-style: none;
     li {
+      @include transition (all .3s ease-in-out);
       line-height: 2em;
       padding: 0.6em 0;
       //@include debug();
-      border-bottom: 1px solid rgba(0,0,0, .4);
-          border-top: 1px solid rgba(255,255,255, .1);
-      @include transition (all .3s ease-in-out);
-        position:relative;
-        width: 100%;
-        display: block;
-        a.icon-symbol{
+      //border-bottom: 1px solid rgba(0,0,0, .4);
+      //border-top: 1px solid rgba(255,255,255, .1);
+      position:relative;
+      width: 100%;
+      display: block;
+
+      a.icon-symbol{
           @include transition (all .3s ease-in-out);
-          position: absolute;
+          @include box-sizing(border-box);
+          display: block;
           font-size: 220%;
-          left:12px;
-          top:20px;
           color: #9b9cb6;
+          text-align: center;
           text-shadow: 0 -1px rgba(0,0,0, .5);
           //@include debug;
-        }
-        a.text {
-          text-decoration: none;
-          color: #9b9cb6;
-          font-size: em(14);
-          @include box-sizing(border-box);
-          @include transition (all .3s $ease-in-out-sine);
-          text-shadow: 0 -1px rgba(0,0,0, .5);
+      } // icons
 
-          display: block;
-          padding: .6em 1em .6em 4em;
-          width: 100%;
-        }
+      //hover
       &:hover{
         background: rgba(0,0,0, .2);
-        a.icon-symbol,a.text{
+        a.icon-symbol{
           color: tint(#eaeaea, 90%);
         }
+      }//hover
 
-      }
-      //active
+        //active
       &.active{
         background: rgba(0,0,0, .5);
         a.icon-symbol{
           color: #fff;
-        }
-        a.text{
-          color: #fff;
-          //background: rgba(0,0,0, .3)
         }
       }
       //first
@@ -169,10 +147,13 @@ body {
     } //end li
   }//end ul
 }//end nav
-
+/*
+|--------------------------------------------------------------------------
+| Main structure
+*/
 #main {
-
   @include box-sizing(border-box);
+  @include transition (all .3s ease-in-out);
   -webkit-overflow-scrolling: touch;
   padding: 3em 4em;
   position: fixed;
@@ -181,84 +162,78 @@ body {
   left: 0;
   bottom: 0;
   width: 100%;
-  //@include linear-gradient(180deg, #f9f9f9 20%, #cccccc 70%, #a3a3a3 71%, #f9f9f9 100%);
-  //@include background-image( linear-gradient(#ffffff, #dedede) );
-  @include transition (all .3s ease-in-out);
-  &.open{
-    //left: em($sidebar_width / 2);
-  }
 }
-
+/*
+|--------------------------------------------------------------------------
+| Page
+*/
 #page{
   //@include debug();
-  @include centered(809px,462px);
+  @include centered($page_width,$page_height);
+}
+#controlsWrapper{
+  //@include debug(green);
+  //some defaults
+  $active_color: #34353B;
+  $control_size:40px;
+  @include linear-gradient(to right, #d0c9c9, #f7f5f5);
+  @include size($control-size*2);
+  @include transition (all .3s ease-in-out);
+  @include user-select(none);
+  border-radius: $control-size;
+  z-index: 1000;
+  position:absolute;
+  bottom: 25px;
+  right: 25px;
+  opacity: .5;
+  &:hover{
+    opacity: .9;
+  }
+   //arrows
+  a{
+    //@include debug();
+    @include transition (all .2s ease-in-out);
+    @include size($control_size);
+    color:$active_color;
+    position:absolute;
+    text-align: center;
+    line-height: $control_size;
+    font-size: 2em;
+    display: block;
+    &:hover{
+      color: shade(#000, 20%);
+      cursor: pointer;
+    }
+    &.disabled{
+      cursor: default;
+      font-weight: normal;
+      color: tint($active_color, 60%);
+    }
+    &.up{top:-$control_size / 2;left:$control_size / 2;line-height: $control_size + 20;}
+    &.down{bottom:-$control_size / 2;left:$control_size / 2;line-height: $control_size - 20;}
+    &.left{top:$control_size / 2;left:-$control_size / 2;text-align:right;}
+    &.right{top:$control_size / 2;right:-$control_size / 2;text-align:left;}
+  }
 }
 #timemachine{
+  @include perspective(300px);
+  @include transform-style(preserve-3d);
   position: relative;
   width: 100%;
   height: 100%;
-  #controlsWrapper{
-    $active-color: #34353B;
-    $control-size:40px;
-    @include linear-gradient(to right, #d0c9c9, #f7f5f5);
-    border-radius: $control-size;
-    @include user-select(none);
-    z-index: 1000;
-    position:absolute;
-    bottom:0px;
-    right: -100px;
-    @include size($control-size*2);
-    @include transition (all .3s ease-in-out);
-     //@include debug(green);
-     opacity: .5;
-     &:hover{
-      opacity: .9;
-     }
-    a{
-      //@include debug();
-
-      @include transition (all .2s ease-in-out);
-      @include size($control-size);
-      color:$active-color;
-      position:absolute;
-      text-align: center;
-      line-height: $control-size;
-      font-size: 2em;
-      display: block;
-      &:hover{
-        color: shade(#000, 20%);
-        cursor: pointer;
-        //font-weight: bold;
-
-      }
-      &.disabled{
-        cursor: default;
-        font-weight: normal;
-        color: tint($active-color, 60%);
-      }
-
-      &.up{top:-$control-size / 2;left:$control-size / 2;line-height: $control-size + 20;}
-      &.down{bottom:-$control-size / 2;left:$control-size / 2;line-height: $control-size - 20;}
-      &.left{top:$control-size / 2;left:-$control-size / 2;text-align:right;}
-      &.right{top:$control-size / 2;right:-$control-size / 2;text-align:left;}
-    }
-  }
-  @include perspective(300px);
-
   .project{
     @include user-select(none);
     @include transition (all .2s ease-in-out);
 
     &>div{
-      @include transition (all .1s ease-in-out);
+      //@include transition (all .1s ease-in-out);
     }
     width: inherit;
     height: inherit;
     position:absolute;
-    @include transform-style(preserve-3d);
+
     @include transform-origin(center top);
     background: transparent url(../images/browser.png) no-repeat center center;
-
     &.future{
       opacity: 0;
       visibility: hidden;
@@ -283,11 +258,12 @@ body {
     }
   }
 }
-
+//Inner Slider
 $default-width-page: 805px;
 $default-height-page: 410px;
 .browser-page{
   //@include debug;
+  position:relative;
   margin: 40px auto;
   @include size($default-width-page $default-height-page);
 }
@@ -296,21 +272,94 @@ $default-height-page: 410px;
 .rs-slider{
   //display: none; //show after imagesloaded
 }
+.show-caption{
+  display: block;
+  @include size(50px);
+  margin: 0 auto;
+  position:relative;
+  top: -30px;
+}
+.caption{
+    display: none;
+    background:rgba(#dedede, 0.7);
+    @include linear-gradient(to top, rgba(#d0c9c9, 1), rgba(#f7f5f5, 1));
+    height: 275px;
+    position:absolute;
+    bottom: -80px;
+    right: 25px;
+    width: 280px;
+    border-radius: 7px;
+    padding: 1em;
+    font-size: 0.6em;
+    font-family: 'helvetica';
+    color: #333;
+    text-shadow: 1px 1px rgba(#eee, 0.5);
+    line-height: 1.3em;
+    box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.1);
+    .toggle-caption {
+      float: right;
+      width: 15px;
+      height: 20px;
+      top: -2px;
+      color: #222;
+      position: relative;
+      right: -5px;
+    }
+    .details {
+      height: 200px;
+      overflow: hidden;
+    }
+    p {
+      margin: 5px 0;
+    }
+    h2 {
+      font-size: 1.3em;
+      color: #222;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    h3, h3 a {
+      font-size: 1em;
+      margin: 4px 0;
+      color: #4A4B69;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    h4{
+      color: #4A4B69;
+      font-weight: bold;
+      margin: 6px 0;
+    }
+    .thumbs {
+      margin-top: 10px;
+      li {
+        width: 70px;
+        cursor: pointer;
+        img {
+          border-radius: 4px;
+          box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.1);
+        }
+      }
+    }
+}
 /*Slides*/
+.rs-slider{
+  //visibility: hidden;
+}
 .rs-slider .rs-slide {
   @include size($default-width-page $default-height-page);
   margin: 0 auto;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   //-webkit-transform: translate3d(0,0,0);
-  &:hover{
-    overflow-y: scroll;
-  }
+  // &:hover{
+  //   overflow-y: scroll;
+  // }
 }
 .rs-slider .rs-slide img{
-    display: inline-block;
-    @include user-select(none);
-    width:100%;
+  @include user-select(none);
+  display: inline-block;
+  width:100%;
 }
 /*Slider Nav*/
 .rs-wrapper .controls{
@@ -318,70 +367,42 @@ $default-height-page: 410px;
     color: white;
 }
 /*Progress bar*/
+.rs-progress{
+    background: rgba(127,127,127,.5);
+}
 .rs-progress .bar{
+   @include linear-gradient(to bottom, #d0c9c9, rgb(219, 212, 212),  #d0c9c9);
+}
+
+/* RSlider Css Cusomize */
+
+/*Slider Nav*/
+.carousel{
+  //visibility: hidden;
+}
+.rc-wrapper .controls{
+    background: rgba(127,127,127,.5);
+    color: white;
+}
+/*Progress bar*/
+.rc-progress {
+
+}
+.rc-progress .bar{
     background: #000;
 }
+/*Slider*/
 
-.main::-webkit-scrollbar {
-  -webkit-appearance: none;
-  background-color: rgba(0,0,0, .15);
-  width: 8px;
-  height: 8px;
+/*Slides*/
+.carousel li.selected{
+
 }
-
-// .main::-webkit-scrollbar-thumb {
-//   border-radius: 0;
-//   background-color: rgba(0,0,0, .4);
-// }
-
-
-
-// #toggle {
-//   display: none;
-//   @include retina-image("../images/menu-icon", 100px 100px,"gif");
-// }
-
-// @media screen and (max-width: 40em) {
-//   .js #nav {
-//     clip: rect(0 0 0 0);
-//     max-height: 0;
-//     position: absolute;
-//     display: block;
-//     overflow: hidden;
-//   }
-//   #nav {
-//     top: 0;
-//     width: 100%;
-//     position: relative;
-//   }
-//   #nav.opened { max-height: 9999px }
-//   #nav a:hover { background: transparent }
-//   #nav .active a:hover { color: #fff; background: rgba(0,0,0, .3) }
-//   #toggle {
-//     @include user-select(none);
-//     display: block;
-//     width: 70px;
-//     height: 55px;
-//     float: right;
-//     margin: 0 -2em 1em 0;
-//     text-indent: -9999px;
-//     overflow: hidden;
-//     background: #444 url("../images/menu-icon.gif") no-repeat 50% 33%;
-//   }
-//   .main {
-//     -webkit-overflow-scrolling: auto;
-//     box-shadow: none;
-//     padding: 0 2em 2em;
-//     border-radius: 0;
-//     position: relative;
-//     width: 100%;
-//     height: 98%;
-//     overflow: hidden;
-//   }
-//   .main::-webkit-scrollbar { background-color: transparent }
-// }
-
-// @media screen and (min-width: 76em) {
-//   #nav { width: 15em }
-//   .main { width: auto; left: 15em }
-// }
+.carousel li.selected img{
+    opacity: 1;
+}
+.carousel li img{
+    opacity: .5;
+    display: inline-block;
+    max-height:100%;
+    max-width:100%;
+}

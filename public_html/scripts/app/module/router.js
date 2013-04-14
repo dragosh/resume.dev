@@ -10,10 +10,12 @@ function(app, Models, Views) {
     var Router = Backbone.Router.extend({
 
         routes: {
-            ''        : 'index',
-            'projects': 'projects',
-            'contact' : 'contact',
-            '*other'  : 'error404' // 404 page
+            ''         : 'index',
+            'projects' : 'projects',
+            'skills'   : 'skills',
+            'education': 'education',
+            'contact'  : 'contact',
+            '*other'   : 'index' // 404 page
         },
 
         initialize: function() {
@@ -41,11 +43,19 @@ function(app, Models, Views) {
             app.layout.setView(app.dom.page, new Views.Projects({collection: app.projects}));
             app.layout.render();
         },
+
+        skills: function() {
+            app.layout.setView(app.dom.page, new Views.Skills());
+            app.layout.render();
+        },
+        education: function() {
+            app.layout.setView(app.dom.page, new Views.Education());
+            app.layout.render();
+        },
         contact: function() {
             app.layout.setView(app.dom.page, new Views.Contact());
             app.layout.render();
         },
-
         error404: function() {
             app.layout.setView(app.dom.page, new Views.Error404());
             app.layout.render();

@@ -10,34 +10,68 @@ function(app, Backbone, Models) {
     'use strict';
 
     var Views = {};
-
+/*
+|--------------------------------------------------------------------------
+|
+*/
     Views.Home = Backbone.Layout.extend({
         template: 'home'
+    });
+/*
+|--------------------------------------------------------------------------
+|
+*/
+    Views.Skills = Backbone.Layout.extend({
+        template: 'skills'
+    });
+    Views.Education = Backbone.Layout.extend({
+        template: 'education'
     });
 
     Views.Project = Backbone.Layout.extend({
         template: 'project',
+        events: {
+            'click .toggle-caption' : 'toggleCaption'
+        },
         initialize: function() {
             this.on('afterRender',function() {
                 var sliderOptions =  {
                     autoplay:0,
                     controls: false,
+                    speed: 200,
+                    ease:'easeInOutSine',
                     maxwidth: 805,
                     maxheight: 410,
                     onReady: function(totalItems,el){
+                        //el.style.visibility = 'visible';
                         app.layout.projectsViews[this._index].slider = el;
                         app.layout.projectsViews[this._index].sliderPos = 0;
                         app.layout.projectsViews[this._index].totalItems = totalItems;
                         app.eventBus.trigger('slider:ready', totalItems,0);
+                        var carouselOptions = {
+                                itemWidth:          70,
+                                itemHeight:         64,
+                                minWidth:           300,
+                            onReady: function(el) {
+                                //el.style.visibility = 'visible';
+                                app.layout.projectsViews[this._index].carousel = el;
+                            }.bind(this),
+                            onSelected: function(index){
+                                $(el).rslider('slide',index);
+                            }.bind(this)
+                        };
+
+                        this.$el.find('.carousel').rcarousel(carouselOptions);
                     }.bind(this),
-                    onStart: function(pos){
+
+                    onStart: function(pos) {
                         app.layout.projectsViews[this._index].sliderPos = pos;
                         app.eventBus.trigger('slider:start', app.layout.projectsViews[this._index].totalItems, pos);
 
                     }.bind(this)
                 };
-
                 this.$el.find('.rs-slider').rslider(sliderOptions);
+                this.$el.find('.caption').delay(2800).slideDown();
             },this);
         },
         serialize: function() {
@@ -45,30 +79,60 @@ function(app, Backbone, Models) {
                 project: this.model.toJSON()
             };
         },
+        toggleCaption: function(ev) {
+            ev.preventDefault();
+            var $caption = this.$el.find('.caption');
+            if($caption.hasClass('collapsed')){
+                $caption.find('.details').show();
+                $caption.animate({height: '275'}, 200, function(){
+                    $caption.removeClass('collapsed');
+                    $(ev.currentTarget).attr('rel', 'down');
+                });
+            }else {
+                $caption.find('.details').hide();
+                $caption.animate({height: '75'}, 200, function(){
+                    $caption.addClass('collapsed');
+                    $(ev.currentTarget).attr('rel', 'up');
+                });
+            }
+        }
     });
 
-    Views.Projects = Backbone.Layout.extend({
-        template: 'projects',
-        id:'timemachine',
+    Views.ProjectsControls = Backbone.Layout.extend({
 
+        template: '#controls-template',
         events: {
             'click .up:not(".disabled")': function(ev) {
-                this.$el.timeMachine('leap','up');
+                $('#timemachine').timeMachine('leap','up');
                 ev.preventDefault();
             },
             'click .down:not(".disabled")': function(ev) {
-                this.$el.timeMachine('leap','down');
+                $('#timemachine').timeMachine('leap','down');
                 ev.preventDefault();
             },
             'click .left:not(".disabled")': function(ev) {
                 $(app.layout.currentProjectView.slider).rslider('slide','prev');
+                $(app.layout.currentProjectView.carousel).rcarousel('select','prev');
                 ev.preventDefault();
 
             },
             'click .right:not(".disabled")': function(ev) {
                 $(app.layout.currentProjectView.slider).rslider('slide','next');
+                $(app.layout.currentProjectView.carousel).rcarousel('select','next');
                 ev.preventDefault();
             }
+        },
+        clean: function(){
+            alert('clean');
+        }
+
+    });
+    Views.Projects = Backbone.Layout.extend({
+        template: 'projects',
+        id:'timemachine',
+
+        events: {
+
         },
         serialize: function() {
             return {
@@ -83,22 +147,25 @@ function(app, Backbone, Models) {
             app.eventBus.on('slider:start', this.checkSliderArrows,this);
             //Timemachine moved
             app.eventBus.on('timemachine:moved', this.checkTMArrows,this);
+            this.controlsView = new Views.ProjectsControls();
+
+            this.$controls = this.controlsView.render().view.$el;
+            this.$controls.appendTo('body');
         },
 
         checkTMArrows: function(pos) {
             var total = this.collection.length;
+            this.$controls.find('.down').removeClass('disabled');
+            if(pos === total-1 ) {
+                this.$controls.find('.down').addClass('disabled');
+            }
 
-            //up
-            if(total -1 <= pos) {
-                this.$el.find('.up').removeClass('disabled');
-                this.$el.find('.down').addClass('disabled');
-            } else {
-                //this.$el.find('.up').addClass('disabled');
-                this.$el.find('.down').removeClass('disabled');
+            if(pos <= total-1 ) {
+                this.$controls.find('.up').removeClass('disabled');
             }
             //down
             if(pos <= 0) {
-                this.$el.find('.up').addClass('disabled');
+                this.$controls.find('.up').addClass('disabled');
             }
 
         },
@@ -106,15 +173,15 @@ function(app, Backbone, Models) {
 
             //right
             if(total - 1 > pos) {
-                this.$el.find('.right').removeClass('disabled');
+                this.$controls.find('.right').removeClass('disabled');
             } else {
-                this.$el.find('.right').addClass('disabled');
+                this.$controls.find('.right').addClass('disabled');
             }
             //left
             if(pos > 0) {
-                this.$el.find('.left').removeClass('disabled');
+                this.$controls.find('.left').removeClass('disabled');
             }else{
-                this.$el.find('.left').addClass('disabled');
+                this.$controls.find('.left').addClass('disabled');
             }
 
         },

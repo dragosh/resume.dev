@@ -57,7 +57,7 @@
                     $(this._items[j]).addClass('past');
                     $(this._items[j]).data('translateY', translateY);
                     $(this._items[j]).data('translateZ', translateZ);
-                    el.style['z-index'] = i;
+                    el.style['z-index'] = i+1;
                     translateY -= this.options.ySpace;
                     translateZ -= this.options.zSpace;
                 }.bind(this));
@@ -76,18 +76,19 @@
                 if(pos >= this._totalItems || pos < 0) { return; }
 
                 this._currentIndex = ( pos < 0 ) ? this._totalItems - 1 :  (pos % this._totalItems);
-                var pastItemIndex = this._currentIndex - 1;
+                var pastItemIndex = this._currentIndex;
                 var futureItemIndex = this._currentIndex + 1;
                 var $item = this._items.eq(this._currentIndex);
-
+                //console.log($item[0]);
                 $.each(this._items,function(i,el) {
                     this._transition(el, -this.options.ySpace*s, -this.options.zSpace*s);
                 }.bind(this));
-                $item.removeClass('future past').addClass('current');
+
                 this._items.eq(futureItemIndex).removeClass('current past').addClass('future');
-
-                this._items.eq(pastItemIndex).removeClass('current future').addClass('past');
-
+                if(pastItemIndex > 0) {
+                    this._items.eq(pastItemIndex).removeClass('current future').addClass('past');
+                }
+                $item.removeClass('future past').addClass('current');
                 this._call('show',this._currentIndex,$item);
             },
 
@@ -96,8 +97,9 @@
 
                 var newY =  $(el).data('translateY') + y;
                 var newZ =  $(el).data('translateZ') + z;
-
+                console.log(newZ);
                 el.style[ prefix.css + 'transform'] = 'translate3d(0px, ' + newY + 'px, ' + newZ + 'px)';
+                //el.style[ prefix.css + 'transform'] = 'transform(scale(' + newY + '))';
 
                 $(el).data('translateY', newY)
                     .data('translateZ', newZ);

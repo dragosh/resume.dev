@@ -2,8 +2,36 @@
     <ul class="rs-slider">
     {{#each project.media}}
         <li class="rs-slide">
+            {{#if isImage}}
             <img src="{{src}}" alt="">
+            {{else}}
+            <iframe src="{{src}}?api=1&amp;player_id=vimeoplayer&amp;title=0&amp;byline=0&amp;portrait=0&amp;color=9b9cb6" width="805" height="410" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+            {{/if}}
+
+
         </li>
     {{/each}}
     </ul>
+
+    <div class="caption">
+        <a class="icon-symbol toggle-caption" rel="down" href="#" title="Show Details"></a>
+        <div class="details">
+            <h2>{{project.name}} - {{project.date}}</h2>
+            <h3>{{project.client}}</h3>
+            <p>{{project.description}}</p>
+            <h4>{{project.technology}}</h4>
+        </div>
+        <h3><a href="">Visit website</a></h3>
+        <div class="thumbs">
+            <ul class="carousel">
+                {{#each project.media}}
+                <li>
+                    <img src="{{thumb}}" alt="" width="60">
+                </li>
+                {{/each}}
+            </ul>
+        </div>
+
+
+    </div>
 </div>

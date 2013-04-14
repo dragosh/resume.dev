@@ -9,7 +9,7 @@
             maxwidth:           800,
             maxheight:          450,
             progressBarWidth:   200,
-            progressBarHeight:  5,
+            progressBarHeight:  6,
             start:              0,
             controls:           true,
             item:               'li',
@@ -218,12 +218,11 @@
             },
             // transition method
             _transition: function() {
-
                 this._call('start',this._current);
                 this.$el.trigger(this.options.namespace + ':start');
                 this.$el.stop().animate({
                     marginLeft: -(this._current * this._itemW)
-                }, this.options.speed, this.options.ease,
+                }, this.options.speed,this.options.ease,
                     function(){
                         this._call('end',this._current);
                         this.$el.trigger(this.options.namespace + ':end');

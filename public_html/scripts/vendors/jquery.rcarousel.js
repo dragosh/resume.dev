@@ -9,7 +9,7 @@
             minWidth:           800,
             itemWidth:          160,
             itemHeight:         90,
-            progressBarWidth:   400,
+            progressBarWidth:   100,
             progressBarHeight:  2,
             start:              0,
             item:               'li',
