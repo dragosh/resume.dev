@@ -25,6 +25,7 @@
         "Backbone" : false,
         "define"   : false,
         "FB"       : false,
+        "$f"       : false,
         "Modernizr": false
     }
 }

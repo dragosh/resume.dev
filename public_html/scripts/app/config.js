@@ -48,6 +48,9 @@ require.config({
 		},
 		'vendors/jquery.rslider': {
 			deps: ['jquery']
+		},
+		'vendors/froogaloop': {
+			deps: []
 		}
 	},
 	map: {

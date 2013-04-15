@@ -33,6 +33,12 @@ function(app, Models, Views) {
             app.projects.once('sync',function(collection) {
                 app.eventBus.trigger('app:addProject',Views,collection);
             },app);
+            //clean up the controls
+            this.on('route', function(route) {
+                if(route !== 'projects' && ! _.isUndefined(app.controlsView)) {
+                    app.controlsView.clean();
+                }
+            });
 
         },
         index: function() {

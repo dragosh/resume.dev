@@ -6,7 +6,8 @@ define([
     'vendors/jquery.easing',
     'vendors/jquery.rslider',
     'vendors/jquery.rcarousel',
-    'vendors/jquery.timemachine'
+    'vendors/jquery.timemachine',
+    'vendors/froogaloop'
 ],
 function(Handlebars) {
     'use strict';
@@ -21,6 +22,7 @@ function(Handlebars) {
         config:{
             'projectsUrl': 'data/projects.json'
         },// Default Config
+        player: null,
         dom: {
             nav : '#nav',
             main : '#main',

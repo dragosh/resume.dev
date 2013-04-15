@@ -15,7 +15,8 @@ function(app, Backbone, Models) {
 |
 */
     Views.Home = Backbone.Layout.extend({
-        template: 'home'
+        template: 'home',
+        className: 'innerPage'
     });
 /*
 |--------------------------------------------------------------------------
@@ -29,12 +30,25 @@ function(app, Backbone, Models) {
     });
 
     Views.Project = Backbone.Layout.extend({
+        el:false,
         template: 'project',
+        className:'browser-page',
         events: {
             'click .toggle-caption' : 'toggleCaption'
         },
         initialize: function() {
+            if(app.player){
+                app.player.addEvent('ready', function() {
+
+                    console.log(this);
+                    //player.addEvent('pause', onPause);
+                    //player.addEvent('finish', onFinish);
+                    //player.addEvent('playProgress', onPlayProgress);
+                });
+            }
+
             this.on('afterRender',function() {
+
                 var sliderOptions =  {
                     autoplay:0,
                     controls: false,
@@ -43,32 +57,29 @@ function(app, Backbone, Models) {
                     maxwidth: 805,
                     maxheight: 410,
                     onReady: function(totalItems,el){
+                        this.projectIndex = app.layout.currentProjectView._index;
                         //el.style.visibility = 'visible';
                         app.layout.projectsViews[this._index].slider = el;
                         app.layout.projectsViews[this._index].sliderPos = 0;
                         app.layout.projectsViews[this._index].totalItems = totalItems;
-                        app.eventBus.trigger('slider:ready', totalItems,0);
+
                         var carouselOptions = {
                                 itemWidth:          70,
                                 itemHeight:         64,
                                 minWidth:           300,
-                            onReady: function(el) {
-                                //el.style.visibility = 'visible';
-                                app.layout.projectsViews[this._index].carousel = el;
-                            }.bind(this),
-                            onSelected: function(index){
-                                $(el).rslider('slide',index);
-                            }.bind(this)
-                        };
+                                onReady: function(el) {
+                                    //el.style.visibility = 'visible';
+                                    app.layout.projectsViews[this._index].carousel = el;
+                                }.bind(this),
+                                onSelected: function(pos){
+                                    app.layout.projectsViews[this._index].sliderPos = pos;
+                                    $(el).rslider('slide',pos);
+                                    app.eventBus.trigger('tm:checkControls',this.projectIndex,pos, app.layout.projectsViews[this._index].totalItems);
+                                }.bind(this)
+                            };
 
                         this.$el.find('.carousel').rcarousel(carouselOptions);
                     }.bind(this),
-
-                    onStart: function(pos) {
-                        app.layout.projectsViews[this._index].sliderPos = pos;
-                        app.eventBus.trigger('slider:start', app.layout.projectsViews[this._index].totalItems, pos);
-
-                    }.bind(this)
                 };
                 this.$el.find('.rs-slider').rslider(sliderOptions);
                 this.$el.find('.caption').delay(2800).slideDown();
@@ -99,7 +110,8 @@ function(app, Backbone, Models) {
     });
 
     Views.ProjectsControls = Backbone.Layout.extend({
-
+        el: false,
+        id:'#controlsWrapper',
         template: '#controls-template',
         events: {
             'click .up:not(".disabled")': function(ev) {
@@ -123,7 +135,7 @@ function(app, Backbone, Models) {
             }
         },
         clean: function(){
-            alert('clean');
+            this.remove();
         }
 
     });
@@ -141,81 +153,102 @@ function(app, Backbone, Models) {
         },
         initialize: function() {
             this.once('afterRender',this.initTimeMachine,this);
-            //Slider Ready
-            app.eventBus.on('slider:ready', this.checkSliderArrows,this);
-            //Slider moved
-            app.eventBus.on('slider:start', this.checkSliderArrows,this);
-            //Timemachine moved
-            app.eventBus.on('timemachine:moved', this.checkTMArrows,this);
-            this.controlsView = new Views.ProjectsControls();
+            //Check controls
+            app.eventBus.on('tm:checkControls', this.checkControls,this);
+            app.controlsView = new Views.ProjectsControls();
 
-            this.$controls = this.controlsView.render().view.$el;
+            this.$controls = app.controlsView.render().view.$el;
             this.$controls.appendTo('body');
+
+
         },
+        checkControls: function(projectIndex,slideIndex,totalSlides){
 
-        checkTMArrows: function(pos) {
-            var total = this.collection.length;
+            var totalProjects = this.collection.length;
             this.$controls.find('.down').removeClass('disabled');
-            if(pos === total-1 ) {
-                this.$controls.find('.down').addClass('disabled');
-            }
 
-            if(pos <= total-1 ) {
+            //up
+            if(projectIndex <= totalProjects-1 ) {
                 this.$controls.find('.up').removeClass('disabled');
             }
+            if(projectIndex === totalProjects-1 ) {
+                this.$controls.find('.down').addClass('disabled');
+            }
             //down
-            if(pos <= 0) {
+            if(projectIndex <= 0) {
                 this.$controls.find('.up').addClass('disabled');
             }
 
-        },
-        checkSliderArrows: function(total,pos) {
-
             //right
-            if(total - 1 > pos) {
+            if(totalSlides - 1 > slideIndex) {
                 this.$controls.find('.right').removeClass('disabled');
             } else {
                 this.$controls.find('.right').addClass('disabled');
             }
             //left
-            if(pos > 0) {
+            if(slideIndex > 0) {
                 this.$controls.find('.left').removeClass('disabled');
             }else{
                 this.$controls.find('.left').addClass('disabled');
             }
 
-        },
+            //Check Also for Video API
+            var videoId = this.collection.at(projectIndex).get('media')[slideIndex].id;
+            var $iframe = $('#vimeoplayer_' + videoId);
 
+            if( ! _.isNull(app.player)) {
+                if(app.player.status === 'playing') {
+                    app.player.api('pause');
+                }
+            }
+            if( ! _.isUndefined(videoId) && $iframe.length > 0){
+                app.player = $f($iframe[0]);
+                app.player.status = 'paused';
+
+                app.player.addEvent('play', function(){
+                    app.player.status = 'playing';
+                });
+
+            } else {
+                //reset
+                app.player = null;
+            }
+
+        },
 
         initTimeMachine: function() {
 
             var tmOptions = {
-                onReady: function(i,$el) {
+                onReady: function(projectIndex,$el) {
 
-                    app.layout.currentProjectView = app.layout.projectsViews[i];
-                    this.renderProject(i,$el);
+                    app.layout.currentProjectView = app.layout.projectsViews[projectIndex];
+                    this.renderProject(projectIndex,$el);
                 }.bind(this),
-                onShow: function(i,$el) {
-                    app.layout.currentProjectView = app.layout.projectsViews[i];
+                onShow: function(projectIndex,$el) {
+                    app.layout.currentProjectView = app.layout.projectsViews[projectIndex];
                     var self = this;
-                    if( _.isUndefined(app.layout.projectsViews[i].rendered) ) {
-                        self.renderProject(i,$el);
+                    if( _.isUndefined(app.layout.projectsViews[projectIndex].rendered) ) {
+                        //give it som time
+                        self.renderProject(projectIndex,$el);
+
+
                     }else{
-                        app.eventBus.trigger('timemachine:moved',i);
-                        app.eventBus.trigger('slider:ready', app.layout.currentProjectView.totalItems,app.layout.currentProjectView.sliderPos);
+
+                        var sliderIndex = app.layout.currentProjectView.sliderPos;
+                        var totalSlides = app.layout.currentProjectView.totalItems;
+                        app.eventBus.trigger('tm:checkControls',projectIndex,sliderIndex,totalSlides);
                     }
                 }.bind(this)
             };
 
             this.$el.timeMachine(tmOptions);
         },
-        renderProject: function(i,$el) {
+        renderProject: function(projectIndex,$el) {
 
             app.layout.currentProjectView.render().then(function(view) {
                 view.$el.appendTo($el);
                 app.layout.currentProjectView.rendered = true;
-                app.layout.currentProjectView._index = i;
-                app.eventBus.trigger('timemachine:moved',i);
+                app.layout.currentProjectView._index = projectIndex;
             });
         }
 

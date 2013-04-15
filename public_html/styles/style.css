@@ -725,6 +725,12 @@ body {
   left: 50%;
   margin-left: -404.5px;
   margin-top: -231px; }
+  #page .innerPage {
+    width: inherit;
+    height: inherit;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6); }
 
 #controlsWrapper {
   background-color: #d0c9c9;
@@ -747,7 +753,7 @@ body {
   user-select: none;
   border-radius: 40px;
   z-index: 1000;
-  position: absolute;
+  position: fixed;
   bottom: 25px;
   right: 25px;
   opacity: .5; }
@@ -824,18 +830,11 @@ body {
     transform-origin: center top;
     background: transparent url(../images/browser.png) no-repeat center center; }
     #timemachine .project.future {
-      opacity: 0;
-      visibility: hidden; }
+      top: 2000px; }
     #timemachine .project.past {
-      opacity: 0.5; }
-      #timemachine .project.past > div {
-        visibility: hidden; }
+      top: -2000px; }
     #timemachine .project.current {
-      opacity: 1;
-      visibility: visible;
-      box-shadow: 0 0 25px 3px rgba(0, 0, 0, 0.65); }
-      #timemachine .project.current > div {
-        visibility: visible; }
+      top: 0; }
 
 .browser-page {
   position: relative;

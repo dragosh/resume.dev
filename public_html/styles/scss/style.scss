@@ -170,6 +170,13 @@ body {
 #page{
   //@include debug();
   @include centered($page_width,$page_height);
+  .innerPage{
+    width: inherit;
+    height: inherit;
+    background:#fff;
+    border-radius:10px;
+    box-shadow: 0 0 15px rgba(0,0,0, .6);
+  }
 }
 #controlsWrapper{
   //@include debug(green);
@@ -182,7 +189,7 @@ body {
   @include user-select(none);
   border-radius: $control-size;
   z-index: 1000;
-  position:absolute;
+  position:fixed;
   bottom: 25px;
   right: 25px;
   opacity: .5;
@@ -235,26 +242,21 @@ body {
     @include transform-origin(center top);
     background: transparent url(../images/browser.png) no-repeat center center;
     &.future{
-      opacity: 0;
-      visibility: hidden;
+      //opacity: 0;
+      //visibility: hidden;
+      top:2000px;
     }
     &.past{
-      opacity: 0.5;
-      &>div{
-        visibility: hidden;
-      }
-      &:nth-last-child(n+6) {
-        //opacity: 0;
-      }
-
+      //opacity: 0.5;
+      top: -2000px;
     }
     &.current{
-      opacity: 1;
-      visibility: visible;
-      @include box-shadow(0 0 25px 3px hsla(0, 0%, 0%, 0.65));
-      &>div{
-        visibility: visible;
-      }
+      //opacity: 1;
+      //visibility: visible;
+      top:0;
+      // &>div{
+      //   visibility: visible;
+      // }
     }
   }
 }
