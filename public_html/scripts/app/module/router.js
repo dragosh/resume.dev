@@ -10,20 +10,26 @@ function(app, Models, Views) {
     var Router = Backbone.Router.extend({
 
         routes: {
-            ''         : 'index',
-            'projects' : 'projects',
-            'skills'   : 'skills',
-            'education': 'education',
-            'contact'  : 'contact',
-            '*other'   : 'index' // 404 page
+            ''          : 'index',
+            'projects'  : 'projects',
+            'experience': 'experience',
+            'skills'    : 'skills',
+            'education' : 'education',
+            'contact'   : 'contact',
+            '*other'    : 'index' // 404 page
         },
 
         initialize: function() {
 
             var layoutOptions = {
-                //keep: true,
                 template: 'layouts/default',
-                el      : app.dom.main
+                el      : app.dom.main,
+                beforeRender: function(){
+                    app.eventBus.trigger('layout:beforeRender');
+                },
+                afterRender: function(){
+                    app.eventBus.trigger('layout:afterRender');
+                }
             };
             app.layout = app.useLayout(layoutOptions);
             app.layout.projectsViews = [];
@@ -35,8 +41,19 @@ function(app, Models, Views) {
             },app);
             //clean up the controls
             this.on('route', function(route) {
+                if(route === 'index'){
+                    $(app.dom.nav).find('li').removeClass('active').first().addClass('active');
+                } else {
+                    //activate the curent menu item
+                    $(app.dom.nav).find('a[href="'+ route +'"]').parent().siblings()
+                        .removeClass('active').end()
+                        .addClass('active');
+                }
+
+                // clean the controls
                 if(route !== 'projects' && ! _.isUndefined(app.controlsView)) {
                     app.controlsView.clean();
+                    app.timeLineView.clean();
                 }
             });
 
@@ -47,6 +64,15 @@ function(app, Models, Views) {
         },
         projects: function() {
             app.layout.setView(app.dom.page, new Views.Projects({collection: app.projects}));
+            //safari problems
+            setTimeout(function(){
+                app.layout.render();
+            },100);
+
+        },
+
+        experience: function() {
+            app.layout.setView(app.dom.page, new Views.Experience());
             app.layout.render();
         },
 

@@ -7,7 +7,10 @@ define([
     'vendors/jquery.rslider',
     'vendors/jquery.rcarousel',
     'vendors/jquery.timemachine',
+    'vendors/jquery.touchSwipe', //touch events
+    'vendors/fastclick', //remove the click delay on touch devices
     'vendors/froogaloop'
+
 ],
 function(Handlebars) {
     'use strict';
@@ -25,28 +28,51 @@ function(Handlebars) {
         player: null,
         dom: {
             nav : '#nav',
-            main : '#main',
-            page : '#page'
+            main: '#main',
+            page: '#page',
+            tl  : '#timeline'
         }, //store DOM elements for later use
         eventBus: _.extend({}, Backbone.Events), //Event Bus
 
+        onBeforeRender: function(){
+            //get the window width / height
+            this.setViewport();
+        },
         onDomChangeTitle: function (title) {
             $(document).attr('title', title);
         },
-        onAddProject: function(Views,collection){
+        onAddProject: function(Views,collection) {
+
+            app.timeLineView = new Views.ProjectsTimeLine({
+                serialize: {
+                    projects: collection.toJSON()
+                }
+            });
+
             collection.forEach( function(modelItem){
                 app.layout.projectsViews.push(new Views.Project({model: modelItem}));
             });
-        }
+        },
+        setViewport: function() {
+            var $nav = $(app.dom.nav);
+            app.viewPort = {
+                w: $(window).innerWidth(),
+                h: $(window).innerHeight()
+            };
+            $nav.css({
+                top:  (app.viewPort.h / 2) - ( $nav.height() / 2 )
+            }).fadeIn('slow');
+        },
     };
 
 
     app.eventBus.on('app:addProject',app.onAddProject);
     //Event Aggregator listner
-    //app.eventBus.on('domchange:title', app.onDomChangeTitle , this);
-
+    app.eventBus.on('layout:beforeRender', app.onBeforeRender , app);
     //Event Aggregator trigger
-    //app.eventBus.trigger('domchange:title', 'New page title');
+    app.eventBus.trigger('domchange:title', 'New page title');
+
+    $(window).on('resize',app.setViewport);
 
 
 /*
@@ -108,7 +134,7 @@ function(Handlebars) {
 
             if (!/^\//.test(fragment)) { fragment = '/' + fragment; }
 
-            console.log('_trackPageview:' , fragment);
+            //console.log('_trackPageview:' , fragment);
             if (window._gaq !== undefined) { window._gaq.push(['_trackPageview', fragment]); }
 
             return matched;

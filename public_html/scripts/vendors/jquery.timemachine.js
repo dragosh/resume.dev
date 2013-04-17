@@ -29,9 +29,7 @@
             distance: 20,
             ySpace: 55,
             zSpace: 55,
-
             onReady    : function(){},
-
             onShow    : function(){}
 
         },
@@ -43,13 +41,12 @@
             init: function () {
 
                 //set the perspective here TODO
+                this._items = this.$el.children('section');
 
-                this._items = this.$el.children('.project');
                 this._totalItems = this._items.length;
+
                 this._currentIndex = this._totalItems - 1;
-                var j = this._totalItems,
-                    translateY = 0,
-                    translateZ = 0;
+                var j = this._totalItems;
 
                 $.each(this._items, function(i,el) {
                     --j;
@@ -61,18 +58,30 @@
 
                 var $item = this._items.eq(this._currentIndex,10);
                 $item.addClass('current');
+
                 this._call('ready',this._currentIndex,$item);
             },
 
             leap: function(where) {
 
                 var pos = this._currentIndex;
-                var  s = (~~(where === 'down')  || -1);
+                if(typeof where === 'string') {
+                    pos += ( ~~(where === 'down')  || -1);
+                    //check for the last element
+                    this._currentIndex = ( pos < 0 ) ? this._totalItems - 1 :  (pos % this._totalItems);
+                } else if(typeof where === 'number') {
+                    //if is valid slide number
+                    if( where < 0 || where > this._totalItems) {
+                        throw new Error('Unknown position');
+                    } else{
+                        this._currentIndex = where;
+                    }
+                } else{
+                    //throw error
+                    throw new Error('Unknown slide number');
+                }
 
-                pos += s;
                 if(pos >= this._totalItems || pos < 0) { return; }
-
-                this._currentIndex = ( pos < 0 ) ? this._totalItems - 1 :  (pos % this._totalItems);
 
                 var $item = this._items.eq(this._currentIndex);
                 $item.removeClass('future past').addClass('current');

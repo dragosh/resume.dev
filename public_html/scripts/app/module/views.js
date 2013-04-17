@@ -1,11 +1,10 @@
 define([
     'app',
-    'backbone',
-    'module/models'
+    'backbone'
 
 ],
 
-function(app, Backbone, Models) {
+function(app, Backbone) {
 
     'use strict';
 
@@ -22,11 +21,29 @@ function(app, Backbone, Models) {
 |--------------------------------------------------------------------------
 |
 */
-    Views.Skills = Backbone.Layout.extend({
-        template: 'skills'
+    Views.Experience = Backbone.Layout.extend({
+        template: 'experience',
+        className: 'innerPage scroll'
     });
+
+    Views.Skills = Backbone.Layout.extend({
+        template: 'skills',
+        className: 'innerPage'
+    });
+
     Views.Education = Backbone.Layout.extend({
-        template: 'education'
+        template: 'education',
+        className: 'innerPage'
+    });
+
+    Views.Contact = Backbone.Layout.extend({
+        template: 'contact',
+        className: 'innerPage'
+    });
+
+    Views.Error404 = Backbone.Layout.extend({
+        template: 'error_404',
+        className: 'innerPage'
     });
 
     Views.Project = Backbone.Layout.extend({
@@ -37,15 +54,15 @@ function(app, Backbone, Models) {
             'click .toggle-caption' : 'toggleCaption'
         },
         initialize: function() {
-            if(app.player){
-                app.player.addEvent('ready', function() {
+            // if(app.player){
+            //     app.player.addEvent('ready', function() {
 
-                    console.log(this);
-                    //player.addEvent('pause', onPause);
-                    //player.addEvent('finish', onFinish);
-                    //player.addEvent('playProgress', onPlayProgress);
-                });
-            }
+            //         console.log(this);
+            //         //player.addEvent('pause', onPause);
+            //         //player.addEvent('finish', onFinish);
+            //         //player.addEvent('playProgress', onPlayProgress);
+            //     });
+            // }
 
             this.on('afterRender',function() {
 
@@ -58,17 +75,17 @@ function(app, Backbone, Models) {
                     maxheight: 410,
                     onReady: function(totalItems,el){
                         this.projectIndex = app.layout.currentProjectView._index;
-                        //el.style.visibility = 'visible';
+                        el.style.visibility = 'visible';
                         app.layout.projectsViews[this._index].slider = el;
                         app.layout.projectsViews[this._index].sliderPos = 0;
                         app.layout.projectsViews[this._index].totalItems = totalItems;
 
                         var carouselOptions = {
                                 itemWidth:          70,
-                                itemHeight:         64,
+                                itemHeight:         49,
                                 minWidth:           300,
                                 onReady: function(el) {
-                                    //el.style.visibility = 'visible';
+                                    el.style.visibility = 'visible';
                                     app.layout.projectsViews[this._index].carousel = el;
                                 }.bind(this),
                                 onSelected: function(pos){
@@ -114,31 +131,131 @@ function(app, Backbone, Models) {
         id:'#controlsWrapper',
         template: '#controls-template',
         events: {
-            'click .up:not(".disabled")': function(ev) {
-                $('#timemachine').timeMachine('leap','up');
-                ev.preventDefault();
-            },
-            'click .down:not(".disabled")': function(ev) {
-                $('#timemachine').timeMachine('leap','down');
-                ev.preventDefault();
-            },
-            'click .left:not(".disabled")': function(ev) {
-                $(app.layout.currentProjectView.slider).rslider('slide','prev');
-                $(app.layout.currentProjectView.carousel).rcarousel('select','prev');
-                ev.preventDefault();
+            'click .up:not(".disabled")': 'moveUp',
+            'click .down:not(".disabled")': 'moveDown',
+            'click .left:not(".disabled")': 'moveLeft',
+            'click .right:not(".disabled")': 'moveRight',
 
-            },
-            'click .right:not(".disabled")': function(ev) {
-                $(app.layout.currentProjectView.slider).rslider('slide','next');
-                $(app.layout.currentProjectView.carousel).rcarousel('select','next');
-                ev.preventDefault();
+        },
+        initialize: function(){
+            $(document).off('keydown').on('keydown',function(ev){
+
+                switch(ev.keyCode){
+                case 37:
+                    this.moveLeft(ev);
+                    break;
+                case 38:
+                    this.moveUp(ev);
+                    break;
+                case 39:
+                    this.moveRight(ev);
+                    break;
+                case 40:
+                    this.moveDown(ev);
+                    break;
+                }
+            }.bind(this));
+
+            $(document).swipe( {
+            //Generic swipe handler for all directions
+                swipe:function(ev, direction) {
+                    if(! _.isNull(direction)) {
+                        switch(direction){
+                        case 'right':
+                            this.moveLeft(ev);
+                            break;
+                        case 'down':
+                            this.moveUp(ev);
+                            break;
+                        case 'left':
+                            this.moveRight(ev);
+                            break;
+                        case 'up':
+                            this.moveDown(ev);
+                            break;
+                        }
+                    }
+                }.bind(this),
+                threshold:0
+            });
+        },
+        moveLeft: function(ev) {
+            $(app.layout.currentProjectView.slider).rslider('slide','prev');
+            $(app.layout.currentProjectView.carousel).rcarousel('select','prev');
+            ev.preventDefault();
+        },
+        moveRight: function(ev) {
+            $(app.layout.currentProjectView.slider).rslider('slide','next');
+            $(app.layout.currentProjectView.carousel).rcarousel('select','next');
+            ev.preventDefault();
+        },
+        moveUp: function(ev) {
+            if(app.layout.currentProjectView._index > 0) {
+                $('#timemachine').timeMachine('leap','up');
+                app.timeLineView.checkBullet();
             }
+            ev.preventDefault();
+        },
+        moveDown: function(ev) {
+            if(app.layout.currentProjectView._index < app.projects.length - 1 ) {
+                $('#timemachine').timeMachine('leap','down');
+                app.timeLineView.checkBullet();
+            }
+            ev.preventDefault();
         },
         clean: function(){
             this.remove();
         }
 
     });
+/*
+|--------------------------------------------------------------------------
+| Projects Timeline View
+*/
+    Views.ProjectsTimeLine = Backbone.Layout.extend({
+        template: '#timeline-template',
+        id: 'timeline',
+        el: false,
+        events: {
+            'click a' : function(ev){
+                ev.preventDefault();
+                $(ev.currentTarget).addClass('current').parent().siblings().find('a').removeClass('current');
+                $('#timemachine').timeMachine('leap',$(ev.currentTarget).parent().index());
+            },
+            'mouseenter a': function(ev){
+                $(ev.currentTarget).next('img').stop().fadeIn();
+            },
+            'mouseleave a': function(ev){
+                $(ev.currentTarget).next('img').stop().fadeOut();
+            }
+        },
+        checkBullet: function(){
+            app.timeLineView.$el.find('li').siblings().find('a').removeClass('current');
+            app.timeLineView.$el.find('li').eq(app.layout.currentProjectView._index).children('a').addClass('current');
+        },
+        afterRender: function() {
+            ///console.log();
+            var space =  Math.floor(app.viewPort.h / this.options.serialize.projects.length) / 2;
+            setTimeout(function() {
+                this.$el.find('li').css({marginBottom:space, marginTop:space})
+                    .last().children('a').addClass('current');
+                this.$el.css({
+                    top:  (app.viewPort.h / 2) - ( this.$el.height() / 2 )
+                });
+                this.$el.fadeIn('slow');
+
+            }.bind(this),100);
+
+        },
+        clean: function(){
+            this.remove();
+        }
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Projects View
+*/
     Views.Projects = Backbone.Layout.extend({
         template: 'projects',
         id:'timemachine',
@@ -153,14 +270,6 @@ function(app, Backbone, Models) {
         },
         initialize: function() {
             this.once('afterRender',this.initTimeMachine,this);
-            //Check controls
-            app.eventBus.on('tm:checkControls', this.checkControls,this);
-            app.controlsView = new Views.ProjectsControls();
-
-            this.$controls = app.controlsView.render().view.$el;
-            this.$controls.appendTo('body');
-
-
         },
         checkControls: function(projectIndex,slideIndex,totalSlides){
 
@@ -217,6 +326,19 @@ function(app, Backbone, Models) {
         },
 
         initTimeMachine: function() {
+            //Check controls
+            app.eventBus.on('tm:checkControls', this.checkControls,this);
+            app.controlsView = new Views.ProjectsControls();
+            this.$controls = app.controlsView.render().view.$el;
+            this.$controls.appendTo('body');
+            if( _.isUndefined(app.timeLineView)) {
+                this.listenToOnce(this.collection,'sync',function(){
+                    app.timeLineView.render().view.$el.appendTo('body');
+
+                });
+            } else {
+                app.timeLineView.render().view.$el.appendTo('body');
+            }
 
             var tmOptions = {
                 onReady: function(projectIndex,$el) {
@@ -225,15 +347,13 @@ function(app, Backbone, Models) {
                     this.renderProject(projectIndex,$el);
                 }.bind(this),
                 onShow: function(projectIndex,$el) {
+
                     app.layout.currentProjectView = app.layout.projectsViews[projectIndex];
                     var self = this;
                     if( _.isUndefined(app.layout.projectsViews[projectIndex].rendered) ) {
                         //give it som time
                         self.renderProject(projectIndex,$el);
-
-
                     }else{
-
                         var sliderIndex = app.layout.currentProjectView.sliderPos;
                         var totalSlides = app.layout.currentProjectView.totalItems;
                         app.eventBus.trigger('tm:checkControls',projectIndex,sliderIndex,totalSlides);
@@ -242,24 +362,18 @@ function(app, Backbone, Models) {
             };
 
             this.$el.timeMachine(tmOptions);
+
+
         },
         renderProject: function(projectIndex,$el) {
 
+            app.layout.currentProjectView._index = projectIndex;
             app.layout.currentProjectView.render().then(function(view) {
                 view.$el.appendTo($el);
                 app.layout.currentProjectView.rendered = true;
-                app.layout.currentProjectView._index = projectIndex;
             });
         }
 
-    });
-
-    Views.Contact = Backbone.Layout.extend({
-        template: 'contact'
-    });
-
-    Views.Error404 = Backbone.Layout.extend({
-        template: 'error_404'
     });
 
     return Views;

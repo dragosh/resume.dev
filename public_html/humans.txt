@@ -7,5 +7,5 @@
 
 # TECHNOLOGY COLOPHON
 
-    HTML5, CSS3
-    jQuery, Modernizr, Backbone
+    HTML5, CSS3, Sass
+    jQuery, Modernizr, Backbone, RequireJS

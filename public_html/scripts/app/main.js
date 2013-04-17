@@ -7,8 +7,11 @@ function(app, Router) {
 
     'use strict';
 
-    app.router = new Router();
-    Backbone.history.start({ pushState: true, root: app.root });
+    $(function() {
+        new FastClick(document.body);
+        app.router = new Router();
+        Backbone.history.start({ pushState: true, root: app.root });
+    });
 
 /*
 |--------------------------------------------------------------------------

@@ -3,8 +3,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1;, user-scalable=no">
         <title>Dragos Oancea-Zevri | Resume</title>
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,400italic,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="styles/style.css">
         <link rel="author" href="humans.txt">
     </head>
@@ -12,9 +13,10 @@
 
     <div role="navigation" id="nav">
 
-       <a class="avatar" href="/"><img src="http://www.gravatar.com/avatar/4a7592258e8335237840645ed7fafb1b" alt=""></a>
         <ul>
-            <li><a href="projects" class="icon-symbol" rel="bag" title="Projects"></a></li>
+            <li><a href="/" class="icon-symbol" rel="user"></a></li>
+            <li><a href="projects" class="icon-symbol" rel="pc" title="Projects"></a></li>
+            <li><a href="experience" class="icon-symbol" rel="bag" title="Experience"></a></li>
             <li><a href="skills" class="icon-symbol" rel="app" title="skills"></a></li>
             <li><a href="education" class="icon-symbol" rel="college" title="Education"></a></li>
             <li><a href="contact" class="icon-symbol" rel="mail" title="Contact"></a></li>
@@ -30,6 +32,17 @@
             <a href="#" class="icon-symbol left disabled" rel="left"></a>
             <a href="#" class="icon-symbol right disabled" rel="right"></a>
         </div>
+        </script>
+
+        <script id="timeline-template" type="template">
+        <ul id="timeline">
+            {{#each projects}}
+                <li>
+                    <a href="#"></a>
+                    <img src="{{media.0.thumb}}" alt="">
+                </li>
+            {{/each}}
+        </ul>
         </script>
 
         <script data-main="scripts/app/config.js" src="scripts/components/requirejs/require.js"></script>

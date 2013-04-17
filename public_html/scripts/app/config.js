@@ -49,7 +49,13 @@ require.config({
 		'vendors/jquery.rslider': {
 			deps: ['jquery']
 		},
+		'vendors/jquery.touchSwipe': {
+			deps: ['jquery']
+		},
 		'vendors/froogaloop': {
+			deps: []
+		},
+		'vendors/fastclick': {
 			deps: []
 		}
 	},
