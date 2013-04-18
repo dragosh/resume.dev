@@ -72,6 +72,7 @@
             },
             //Slide method
             slide: function(dir) {
+
                 //set the current position
                 var pos = this._current;
                 if(typeof dir === 'string') {
@@ -114,7 +115,7 @@
                 if($.isFunction( $.fn.imagesLoaded ) ) {
                     // show progess bar
                     this.$progress.fadeIn();
-                    this.$el.prevAll('.controls').andSelf().hide();
+                    //this.$el.prevAll('.controls').andSelf().hide();
 
                     this.$el.imagesLoaded({
                         callback: function(){
@@ -135,9 +136,6 @@
                     // show progress fallback
                     // display the preloader for now
                 }
-
-
-
             },
 
             //creates the Dom Wrapper & Slider
@@ -242,7 +240,6 @@
 
 
     function Plugin( el, options ) {
-
         this.el = el;
         this.$el = $(el);
         this.options = $.extend( {}, defaults, options) ;

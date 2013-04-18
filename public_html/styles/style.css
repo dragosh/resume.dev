@@ -1022,8 +1022,8 @@ a, button {
       display: none;
       left: 20px;
       top: -10px;
-      width: 50px;
-      height: auto;
+      width: 60px;
+      height: 42px;
       box-shadow: 2px 2px 5px 3px rgba(0, 0, 0, 0.3);
       border-radius: 2px;
       border: 1px solid #000; }
@@ -1150,6 +1150,7 @@ a, button {
   top: -30px; }
 
 .caption {
+  z-index: 50;
   display: none;
   background: rgba(222, 222, 222, 0.7);
   background-color: #d0c9c9;
@@ -1161,6 +1162,7 @@ a, button {
   background-image: linear-gradient(to top, #d0c9c9, #f7f5f5);
   height: 275px;
   position: absolute;
+  overflow: hidden;
   bottom: -80px;
   right: 25px;
   width: 280px;
@@ -1170,11 +1172,23 @@ a, button {
   color: #333;
   text-shadow: 1px 1px rgba(238, 238, 238, 0.5);
   line-height: 1.3em;
-  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1); }
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-transition: height 0.2s ease-in-out;
+  -moz-transition: height 0.2s ease-in-out;
+  -ms-transition: height 0.2s ease-in-out;
+  -o-transition: height 0.2s ease-in-out;
+  transition: height 0.2s ease-in-out;
+  -webkit-transform: translate3d(0, 0, 0); }
+  .caption.collapsed {
+    height: 75px; }
+    .caption.collapsed .details {
+      opacity: 0;
+      display: none; }
   .caption .toggle-caption {
     float: right;
-    width: 15px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
     top: -2px;
     color: #222;
     position: relative;
@@ -1231,7 +1245,7 @@ a, button {
 
 /*Slides*/
 .rs-slider {
-  visibility: hidden; }
+  display: none; }
 
 .rs-slider .rs-slide {
   width: 805px;
@@ -1271,7 +1285,7 @@ a, button {
 /* RSlider Css Cusomize */
 /*Slider Nav*/
 .carousel {
-  visibility: hidden; }
+  display: none; }
 
 .rc-wrapper .controls {
   background: rgba(127, 127, 127, 0.5);

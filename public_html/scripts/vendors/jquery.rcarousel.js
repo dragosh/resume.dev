@@ -154,8 +154,8 @@
 
                 if($.isFunction( $.fn.imagesLoaded ) ) {
                     // show progess bar
-                    this.$progress.fadeIn();
-                    this.$el.hide();
+                    //this.$progress.fadeIn();
+                    //this.$el.hide();
 
                     var dfd = this.$el.imagesLoaded({
                         callback: function(){

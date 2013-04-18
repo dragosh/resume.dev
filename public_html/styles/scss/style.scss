@@ -482,7 +482,7 @@ $h2_color: #333;
       display: none;
       left: $bullet_size + 10;
       top: $bullet_size - 20;
-      @include size(50 auto);
+      @include size(60 42);
       @include box-shadow(2px 2px 5px 3px hsla(0, 0%, 0%, 0.3));
       border-radius: 2px;
       border:1px solid #000;
@@ -585,9 +585,6 @@ $default-height-page: 410px;
 }
 
 /*Slider*/
-.rs-slider{
-  //display: none; //show after imagesloaded
-}
 .show-caption{
   display: block;
   @include size(50px);
@@ -596,11 +593,13 @@ $default-height-page: 410px;
   top: -30px;
 }
 .caption{
+    z-index: 50;
     display: none;
     background:rgba(#dedede, 0.7);
     @include linear-gradient(to top, rgba(#d0c9c9, 1), rgba(#f7f5f5, 1));
     height: 275px;
     position:absolute;
+    overflow: hidden;
     bottom: -80px;
     right: 25px;
     width: 280px;
@@ -611,10 +610,22 @@ $default-height-page: 410px;
     text-shadow: 1px 1px rgba(#eee, 0.5);
     line-height: 1.3em;
     box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.1);
+    @include transition (height .2s ease-in-out);
+    -webkit-transform: translate3d(0,0,0);
+    &.collapsed{
+      height: 75px;
+       .details {
+        opacity: 0;
+        display: none;
+       }
+    }
+
     .toggle-caption {
       float: right;
-      width: 15px;
-      height: 20px;
+      width: 30px;
+      height: 30px;
+
+      text-align: center;
       top: -2px;
       color: #222;
       position: relative;
@@ -687,7 +698,7 @@ $default-height-page: 410px;
 }
 /*Slides*/
 .rs-slider{
-  visibility: hidden;
+  display: none;
 }
 .rs-slider .rs-slide {
   @include size($default-width-page $default-height-page);
@@ -723,7 +734,7 @@ $default-height-page: 410px;
 
 /*Slider Nav*/
 .carousel{
-  visibility: hidden;
+  display: none;
 }
 .rc-wrapper .controls{
     background: rgba(127,127,127,.5);

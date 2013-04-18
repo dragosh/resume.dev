@@ -59,7 +59,7 @@
                 var $item = this._items.eq(this._currentIndex,10);
                 $item.addClass('current');
 
-                this._call('ready',this._currentIndex,$item);
+                this._call('show',this._currentIndex,$item);
             },
 
             leap: function(where) {
