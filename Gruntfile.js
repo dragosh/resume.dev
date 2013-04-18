@@ -46,11 +46,33 @@ module.exports = function(grunt) {
 				cssDir: '<%= config.app %>/styles/css',
 				debugInfo: true
 			}
+		},
+		min: {
+			production: {
+				src: ['<%= config.app %>/scripts/components/requirejs/require.js','<%= config.app %>/scripts/script.min.js'],
+				dest: '<%= config.app %>/scripts/script.min.js'
+			}
+		},
+		// This task uses James Burke's excellent r.js AMD build tool.  In the
+		// future other builders may be contributed as drop-in alternatives.
+		requirejs: {
+			compile: {
+				options: {
+					// Include the main configuration file
+					mainConfigFile: '<%= config.app %>/scripts/app/config.js',
+					// Output file
+					out:  '<%= config.app %>/scripts/script.min.js',
+					// Root application module
+					name: 'config',
+					// Do not wrap everything in an IIFE
+					wrap: false
+				}
+			}
 		}
 	});
 
 	//Default task
-	//grunt.registerTask('server', 'watch');
+	grunt.registerTask('build', 'requirejs min:production');
 	grunt.registerTask('default', 'jshint');
 
 };

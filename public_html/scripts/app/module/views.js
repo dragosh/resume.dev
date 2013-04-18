@@ -96,20 +96,31 @@ function(app, Backbone) {
                     }.bind(this),
                 };
                 this.$el.find('.rs-slider').rslider(sliderOptions);
-                this.$el.find('.caption').delay(2500).fadeIn();
-                //this.$el.find('.caption').removeClass('collapsed');
-                this.$el.on('click','a.toggle-caption',function(ev) {
-                    console.log(ev);
-                    this.$el.find('.caption').toggleClass('collapsed');
+
+                var $caption = this.$el.find('.caption');
+
+                $caption.delay(2500).fadeIn();
+
+                $caption.find('a.toggle-caption').off('click').on('click',function(ev) {
+
+                    if( $caption.hasClass('collapsed') ){
+                        $(ev.currentTarget).attr('rel', 'down');
+                    } else {
+                        $(ev.currentTarget).attr('rel', 'up');
+                    }
+
+                    $caption.toggleClass('collapsed');
                     ev.preventDefault();
-                }.bind(this))
-                .swipe( {
+                }.bind(this));
+
+                //Swipe Event
+                $caption.swipe( {
                     //Generic swipe handler for all directions
                     swipe:function(ev, direction) {
                         if(direction === 'down'){
-                            this.$el.find('.caption').addClass('collapsed');
+                            $caption.addClass('collapsed');
                         } else if(direction === 'up') {
-                            this.$el.find('.caption').removeClass('collapsed');
+                            $caption.removeClass('collapsed');
                         }
                         ev.stopPropagation();
                         ev.preventDefault();
@@ -122,25 +133,7 @@ function(app, Backbone) {
             return {
                 project: this.model.toJSON()
             };
-        },
-        // //captions project
-        // toggleCaption: function(ev) {
-        //     ev.preventDefault();
-        //     var $caption = this.$el.find('.caption');
-        //     if($caption.hasClass('collapsed')){
-        //         $caption.find('.details').show();
-        //         $caption.animate({height: '275'}, 200, function(){
-        //             $caption.removeClass('collapsed');
-        //             $(ev.currentTarget).attr('rel', 'down');
-        //         });
-        //     }else {
-        //         $caption.find('.details').hide();
-        //         $caption.animate({height: '75'}, 200, function(){
-        //             $caption.addClass('collapsed');
-        //             $(ev.currentTarget).attr('rel', 'up');
-        //         });
-        //     }
-        // }
+        }
     });
 /*
 |--------------------------------------------------------------------------
@@ -384,8 +377,6 @@ function(app, Backbone) {
 
             app.layout.currentProjectView = app.layout.projectsViews[projectIndex];
             var hasRendered = app.layout.currentProjectView.__manager__.hasRendered;
-
-
             if( _.isUndefined(hasRendered) ) {
 
                 app.layout.currentProjectView._index = projectIndex;
@@ -394,10 +385,6 @@ function(app, Backbone) {
                 });
             }else {
 
-                console.log(this.el);
-                console.log($el[0]);
-                //console.log($el);
-                //console.log(this.$el);
                 var sliderIndex = app.layout.currentProjectView.sliderPos;
                 var totalSlides = app.layout.currentProjectView.totalItems;
                 app.layout.currentProjectView.$el.appendTo($el);
