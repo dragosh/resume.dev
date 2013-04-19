@@ -47,12 +47,39 @@ module.exports = function(grunt) {
 				debugInfo: true
 			}
 		},
-		min: {
-			production: {
-				src: ['<%= config.app %>/scripts/components/requirejs/require.js','<%= config.app %>/scripts/script.min.js'],
-				dest: '<%= config.app %>/scripts/script.min.js'
+		uglify: {
+			options: {
+				banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
+				'<%= grunt.template.today("yyyy-mm-dd") %> */'
+			},
+			min: {
+				files: {
+					'<%= config.app %>/scripts/script.min.js': [
+						'<%= config.app %>/scripts/components/requirejs/require.js',
+						'<%= config.app %>/scripts/script.min.js'
+					]
+				}
 			}
 		},
+		imagemin: {
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= config.app %>/images',
+                    src: '{,*/}*.{png,jpg,jpeg}',
+                    dest: '<%= config.app %>/images'
+                }]
+            }
+        },
+        cssmin: {
+            dist: {
+                files: {
+                    '<%= config.app %>/styles/style.css': [
+                        '<%= config.app %>/styles/{,*/}*.css'
+                    ]
+                }
+            }
+        },
 		// This task uses James Burke's excellent r.js AMD build tool.  In the
 		// future other builders may be contributed as drop-in alternatives.
 		requirejs: {
@@ -65,14 +92,19 @@ module.exports = function(grunt) {
 					// Root application module
 					name: 'config',
 					// Do not wrap everything in an IIFE
-					wrap: false
+					wrap: false,
+
+					preserveLicenseComments: false,
+
+					useStrict: true,
+					//uglify2: {}
 				}
 			}
 		}
 	});
 
 	//Default task
-	grunt.registerTask('build', 'requirejs min:production');
+	grunt.registerTask('build', ['cssmin','requirejs', 'uglify']);
 	grunt.registerTask('default', 'jshint');
 
 };

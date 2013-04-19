@@ -2,21 +2,21 @@
 
     'use strict';
 
-    var prefix = (function () {
-        var styles = window.getComputedStyle(document.documentElement, ''),
-            pre = (Array.prototype.slice
-                    .call(styles)
-                    .join('')
-                    .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
-                )[1],
-            dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
-        return {
-            dom: dom,
-            lowercase: pre,
-            css: '-' + pre + '-',
-            js: pre[0].toUpperCase() + pre.substr(1)
-        };
-    })();
+    // var prefix = (function () {
+    //     var styles = window.getComputedStyle(document.documentElement, ''),
+    //         pre = (Array.prototype.slice
+    //                 .call(styles)
+    //                 .join('')
+    //                 .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+    //             )[1],
+    //         dom = ('WebKit|Moz|MS|O').match(new RegExp('(' + pre + ')', 'i'))[1];
+    //     return {
+    //         dom: dom,
+    //         lowercase: pre,
+    //         css: '-' + pre + '-',
+    //         js: pre[0].toUpperCase() + pre.substr(1)
+    //     };
+    // })();
 
     var pluginName = 'timeMachine',
         /*
@@ -100,7 +100,7 @@
                 var newY =  $(el).data('translateY') + y;
                 var newZ =  $(el).data('translateZ') + z;
 
-                el.style[ prefix.css + 'transform'] = 'translate3d(0px, ' + newY + 'px, ' + newZ + 'px)';
+                //el.style[ prefix.css + 'transform'] = 'translate3d(0px, ' + newY + 'px, ' + newZ + 'px)';
                 //el.style[ prefix.css + 'transform'] = 'transform(scale(' + newY + '))';
 
                 $(el).data('translateY', newY)

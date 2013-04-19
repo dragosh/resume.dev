@@ -3,9 +3,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1;, user-scalable=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <title>Dragos Oancea-Zevri | Resume</title>
-        <link href='http://fonts.googleapis.com/css?family=Lato:400,400italic,700' rel='stylesheet' type='text/css'>
+        <link href="http://fonts.googleapis.com/css?family=Lato:400,400italic,700" rel="stylesheet" type="text/css">
+
         <link rel="stylesheet" href="styles/style.css">
         <link rel="author" href="humans.txt">
     </head>
@@ -14,23 +15,25 @@
     <div role="navigation" id="nav">
 
         <ul>
-            <li><a href="/" class="icon-symbol" rel="user"></a></li>
-            <li><a href="projects" class="icon-symbol" rel="pc" title="Projects"></a></li>
-            <li><a href="experience" class="icon-symbol" rel="bag" title="Experience"></a></li>
-            <li><a href="skills" class="icon-symbol" rel="app" title="skills"></a></li>
-            <li><a href="education" class="icon-symbol" rel="college" title="Education"></a></li>
-            <li><a href="contact" class="icon-symbol" rel="mail" title="Contact"></a></li>
+            <li><a href="/" class="icon-symbol icon-home" rel="user"></a></li>
+            <li><a href="projects" class="icon-symbol icon-desktop" rel="pc" title="Projects"></a></li>
+            <li><a href="experience" class="icon-symbol icon-briefcase" rel="bag" title="Experience"></a></li>
+            <li><a href="skills" class="icon-symbol icon-check" rel="app" title="skills"></a></li>
+            <li><a href="education" class="icon-symbol icon-certificate" rel="college" title="Education"></a></li>
+            <li><a href="contact" class="icon-symbol icon-envelope-alt" rel="mail" title="Contact"></a></li>
         </ul>
 
     </div>
     <div role="main" id="main"></div>
-
+ <!--[if lt IE 9]>
+ <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+ <![endif]-->
         <script id="controls-template" type="template">
         <div id="controlsWrapper">
-            <a href="#" class="icon-symbol up disabled" rel="up"></a>
-            <a href="#" class="icon-symbol down disabled" rel="down"></a>
-            <a href="#" class="icon-symbol left disabled" rel="left"></a>
-            <a href="#" class="icon-symbol right disabled" rel="right"></a>
+            <a href="#" class="icon-symbol icon-angle-up up disabled" rel="up"></a>
+            <a href="#" class="icon-symbol icon-angle-down down disabled" rel="down"></a>
+            <a href="#" class="icon-symbol icon-angle-left left disabled" rel="left"></a>
+            <a href="#" class="icon-symbol icon-angle-right right disabled" rel="right"></a>
         </div>
         </script>
 
@@ -45,7 +48,10 @@
         </ul>
         </script>
 
-        <script data-main="scripts/app/config.js" src="scripts/components/requirejs/require.js"></script>
-        <!--<script src="scripts/script.min.js"></script>-->
+        <!--[if lt IE 9]>
+            <script src="scripts/es5-shim.min.js"></script>
+        <![endif]-->
+
+        <script src="scripts/script.min.js"></script>
     </body>
 </html>

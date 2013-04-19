@@ -101,15 +101,18 @@ function(app, Backbone) {
 
                 $caption.delay(2500).fadeIn();
 
-                $caption.find('a.toggle-caption').off('click').on('click',function(ev) {
-
-                    if( $caption.hasClass('collapsed') ){
-                        $(ev.currentTarget).attr('rel', 'down');
+                var checkIcon = function() {
+                    var $icon = $caption.find('a.toggle-caption');
+                    if( ! $caption.hasClass('collapsed') ){
+                        $icon.removeClass('icon-angle-up').addClass('icon-angle-down');
                     } else {
-                        $(ev.currentTarget).attr('rel', 'up');
-                    }
+                        $icon.removeClass('icon-angle-down').addClass('icon-angle-up');
 
+                    }
+                };
+                $caption.find('a.toggle-caption').off('click').on('click',function(ev) {
                     $caption.toggleClass('collapsed');
+                    checkIcon();
                     ev.preventDefault();
                 }.bind(this));
 
@@ -122,6 +125,7 @@ function(app, Backbone) {
                         } else if(direction === 'up') {
                             $caption.removeClass('collapsed');
                         }
+                        checkIcon();
                         ev.stopPropagation();
                         ev.preventDefault();
                     }.bind(this),
