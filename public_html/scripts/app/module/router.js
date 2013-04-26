@@ -39,7 +39,7 @@ function(app, Models, Views) {
             app.projects.once('sync',function(collection) {
                 app.eventBus.trigger('app:addProject',Views,collection);
             },app);
-            //clean up the controls
+
             this.on('route', function(route) {
                 if(route === 'index'){
                     $(app.dom.nav).find('li').removeClass('active').first().addClass('active');
@@ -52,6 +52,7 @@ function(app, Models, Views) {
 
                 // clean the controls
                 if(route !== 'projects' && ! _.isUndefined(app.controlsView)) {
+                    app.layout.currentProjectView.clean();
                     app.controlsView.clean();
                     app.timeLineView.clean();
                 }
@@ -62,13 +63,13 @@ function(app, Models, Views) {
             app.layout.setView(app.dom.page, new Views.Home());
             app.layout.render();
         },
+
         projects: function() {
             app.layout.setView(app.dom.page, new Views.Projects({collection: app.projects}));
-            //safari problems
+
             setTimeout(function(){
                 app.layout.render();
             },100);
-
         },
 
         experience: function() {

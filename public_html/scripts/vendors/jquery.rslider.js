@@ -8,8 +8,8 @@
             namespace:          'rs',
             maxwidth:           800,
             maxheight:          450,
-            progressBarWidth:   200,
-            progressBarHeight:  6,
+            progressBarWidth:   458,
+            progressBarHeight:  11,
             start:              0,
             controls:           true,
             item:               'li',
@@ -24,12 +24,15 @@
 
             //initilize the plugin
             init: function () {
+
                 this._items     = this.$el.find(this.options.item).length;
                 this._itemW     = this.options.maxwidth;
                 this._itemH     = this.options.maxheight;
                 this._current   = parseInt(this.options.start,10);
                 this._interval  = 0;
                 this._isPlaying = false;
+                this._call('init',this._items);
+                this.$el.trigger(this.options.namespace + ':init');
                 //
                 this.$el.find(this.options.item).css('float','left');
                 //Create
@@ -122,7 +125,7 @@
                             this._call('ready',this._items);
                             this.$el.trigger(this.options.namespace + ':ready');
                             this.$progress.fadeTo('slow', 0, function() {
-                                this.$el.prevAll('.controls').andSelf().fadeIn();
+                                this.$el.prevAll('.controls').fadeIn();
                             }.bind(this));
 
                         }.bind(this),
@@ -172,8 +175,7 @@
                     css:{
                         width: this.options.progressBarWidth,
                         height: this.options.progressBarHeight,
-                        top: Math.round(this._itemH / 2) - ( this.options.progressBarHeight / 2),
-                        left: Math.round(this._itemW / 2) - ( this.options.progressBarWidth / 2),
+                        //left: Math.round(this._itemW / 2) - ( this.options.progressBarWidth / 2),
                         position: 'absolute'
                     },
                     'class': this.options.namespace + '-progress'

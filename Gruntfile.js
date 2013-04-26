@@ -71,15 +71,15 @@ module.exports = function(grunt) {
                 }]
             }
         },
-        cssmin: {
-            dist: {
-                files: {
-                    '<%= config.app %>/styles/style.css': [
-                        '<%= config.app %>/styles/{,*/}*.css'
-                    ]
-                }
-            }
-        },
+        // cssmin: {
+        //     dist: {
+        //         files: {
+        //             '<%= config.app %>/styles/style.css': [
+        //                 '<%= config.app %>/styles/{,*/}*.css'
+        //             ]
+        //         }
+        //     }
+        // },
 		// This task uses James Burke's excellent r.js AMD build tool.  In the
 		// future other builders may be contributed as drop-in alternatives.
 		requirejs: {
@@ -104,7 +104,7 @@ module.exports = function(grunt) {
 	});
 
 	//Default task
-	grunt.registerTask('build', ['cssmin','requirejs', 'uglify']);
+	grunt.registerTask('build', ['requirejs', 'uglify']);
 	grunt.registerTask('default', 'jshint');
 
 };

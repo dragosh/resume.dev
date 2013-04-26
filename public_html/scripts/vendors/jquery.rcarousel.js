@@ -22,6 +22,8 @@
 
             //initilize the plugin
             init: function () {
+                this._callback('init',this._items);
+                this.$el.trigger(this.options.namespace + ':init');
                 this._width = (function() {
                     // TO DO  for responsiveness
                     return this.options.minWidth;
@@ -44,7 +46,7 @@
                 //Start once the preloader is done
                 this.$el.one(this.options.namespace + ":ready", function(){
 
-                    this._initEvents();
+                    this.attachEvents();
 
                 }.bind(this));
             },
@@ -131,7 +133,8 @@
             },
 
             //Initialize the events Hendlers
-            _initEvents: function() {
+            attachEvents: function($el) {
+
                 // //on element
                 this.$el.find(this.options.item).on("click",function(ev) {
                     var index = $(ev.currentTarget).index();
@@ -252,8 +255,8 @@
             _callback: function(fn,options) {
                 var clb = 'on'+fn.charAt(0).toUpperCase() + fn.slice(1); //append the on prefix for callback functions
                 var args = Array.prototype.slice.call( arguments, 1 );
-                if (typeof this.options[clb] == 'function') { // make sure the callback is a function
-                    args.push(this.el,this);
+                if (typeof this.options[clb] === 'function') { // make sure the callback is a function
+                    args.push(this,this);
                     this.options[clb].apply(this, args ); // brings the scope to the callback
                 }
             }

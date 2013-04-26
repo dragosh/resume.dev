@@ -9,6 +9,7 @@ function(app, Backbone) {
     'use strict';
 
     var Views = {};
+
 /*
 |--------------------------------------------------------------------------
 |   Home
@@ -64,42 +65,9 @@ function(app, Backbone) {
         initialize: function() {
             //init sliders & carousel only after redndering
             this.on('afterRender',function() {
+                var projIndex = app.layout.currentProjectView._index;
 
-                var sliderOptions =  {
-                    autoplay:0,
-                    controls: false,
-                    speed: 200,
-                    ease:'easeInOutSine',
-                    maxwidth: 805,
-                    maxheight: 410,
-                    onReady: function(totalItems,el){
-                        this.projectIndex = app.layout.currentProjectView._index;
-                        app.layout.currentProjectView.slider = el;
-                        app.layout.currentProjectView.sliderPos = 0;
-                        app.layout.currentProjectView.totalItems = totalItems;
-
-                        var carouselOptions = {
-                                itemWidth:          70,
-                                itemHeight:         49,
-                                minWidth:           300,
-                                onReady: function(el) {
-                                    app.layout.currentProjectView.carousel = el;
-                                }.bind(this),
-                                onSelected: function(pos){
-                                    app.layout.currentProjectView.sliderPos = pos;
-                                    $(el).rslider('slide',pos);
-                                    app.eventBus.trigger('tm:checkControls',this.projectIndex,pos, app.layout.currentProjectView.totalItems);
-                                }.bind(this)
-                            };
-
-                        this.$el.find('.carousel').rcarousel(carouselOptions);
-                    }.bind(this),
-                };
-                this.$el.find('.rs-slider').rslider(sliderOptions);
-
-                var $caption = this.$el.find('.caption');
-
-                $caption.delay(2500).fadeIn();
+                var $caption = this.$('.caption');
 
                 var checkIcon = function() {
                     var $icon = $caption.find('a.toggle-caption');
@@ -110,6 +78,50 @@ function(app, Backbone) {
 
                     }
                 };
+
+                var sliderOptions =  {
+                    autoplay:0,
+                    controls: false,
+                    speed: 200,
+                    ease:'easeInOutSine',
+                    maxwidth: 805,
+                    maxheight: 410,
+                    onInit: function(totalItems,el,sliderObj){
+
+                        app.layout.currentProjectView.slider = sliderObj;
+                        app.layout.currentProjectView.sliderPos = 0;
+                        app.layout.currentProjectView.totalItems = totalItems;
+
+                        var carouselOptions = {
+                                itemWidth:          70,
+                                itemHeight:         49,
+                                minWidth:           300,
+                                onInit: function(el,carouselObj){
+
+                                    app.layout.currentProjectView.carousel = carouselObj;
+                                }.bind(this),
+                                onReady: function() {
+                                    //$caption.delay(4000).show();
+                                    setTimeout(function(){
+                                        $caption.addClass('opened');
+                                    },1500);
+                                }.bind(this),
+                                onSelected: function(pos){
+
+                                    app.layout.currentProjectView.sliderPos = pos;
+                                    app.layout.currentProjectView.slider.slide(pos);
+                                    app.eventBus.trigger('tm:checkControls',projIndex,pos, app.layout.currentProjectView.totalItems);
+                                }.bind(this)
+                            };
+
+                        this.$('.carousel').rcarousel(carouselOptions);
+                    }.bind(this),
+                    onReady: function() {
+
+                    }.bind(this),
+                };
+                this.$('.rs-slider').rslider(sliderOptions);
+                // icon press
                 $caption.find('a.toggle-caption').off('click').on('click',function(ev) {
                     $caption.toggleClass('collapsed');
                     checkIcon();
@@ -137,6 +149,11 @@ function(app, Backbone) {
             return {
                 project: this.model.toJSON()
             };
+        },
+        clean: function() {
+            console.log('clean');
+            this.stopListening();
+            this.remove();
         }
     });
 /*
@@ -154,9 +171,9 @@ function(app, Backbone) {
             'click .right:not(".disabled")': 'moveRight',
 
         },
-        initialize: function(){
+        initialize: function() {
+            // Keyboard navigation
             $(document).off('keydown').on('keydown',function(ev){
-
                 switch(ev.keyCode){
                 case 37:
                     this.moveLeft(ev);
@@ -172,7 +189,7 @@ function(app, Backbone) {
                     break;
                 }
             }.bind(this));
-
+            // Swipe navigation
             $(document).swipe( {
             //Generic swipe handler for all directions
                 swipe:function(ev, direction) {
@@ -198,14 +215,15 @@ function(app, Backbone) {
         },
         moveLeft: function(ev) {
 
-            $(app.layout.currentProjectView.slider).rslider('slide','prev');
-            $(app.layout.currentProjectView.carousel).rcarousel('select','prev');
+            app.layout.currentProjectView.slider.slide('prev');
+            app.layout.currentProjectView.carousel.select('prev');
+
             ev.preventDefault();
         },
         moveRight: function(ev) {
+            app.layout.currentProjectView.slider.slide('next');
+            app.layout.currentProjectView.carousel.select('next');
 
-            $(app.layout.currentProjectView.slider).rslider('slide','next');
-            $(app.layout.currentProjectView.carousel).rcarousel('select','next');
             ev.preventDefault();
         },
         moveUp: function(ev) {
@@ -322,27 +340,27 @@ function(app, Backbone) {
                 this.$controls.find('.left').addClass('disabled');
             }
 
-            // //Check Also for Video API
-            // var videoId = this.collection.at(projectIndex).get('media')[slideIndex].id;
-            // var $iframe = $('#vimeoplayer_' + videoId);
+            //Check Also for Video API
+            var videoId = this.collection.at(projectIndex).get('media')[slideIndex].id;
+            var $iframe = $('#vimeoplayer_' + videoId);
 
-            // if( ! _.isNull(app.player)) {
-            //     if(app.player.status === 'playing') {
-            //         app.player.api('pause');
-            //     }
-            // }
-            // if( ! _.isUndefined(videoId) && $iframe.length > 0){
-            //     app.player = $f($iframe[0]);
-            //     app.player.status = 'paused';
+            if( ! _.isNull(app.player)) {
+                if(app.player.status === 'playing') {
+                    app.player.api('pause');
+                }
+            }
+            if( ! _.isUndefined(videoId) && $iframe.length > 0){
+                app.player = $f($iframe[0]);
+                app.player.status = 'paused';
 
-            //     app.player.addEvent('play', function(){
-            //         app.player.status = 'playing';
-            //     });
+                app.player.addEvent('play', function(){
+                    app.player.status = 'playing';
+                });
 
-            // } else {
-            //     //reset
-            //     app.player = null;
-            // }
+            } else {
+                //reset
+                app.player = null;
+            }
 
         },
 
@@ -380,7 +398,9 @@ function(app, Backbone) {
         _renderProject: function(projectIndex,$el) {
 
             app.layout.currentProjectView = app.layout.projectsViews[projectIndex];
+
             var hasRendered = app.layout.currentProjectView.__manager__.hasRendered;
+
             if( _.isUndefined(hasRendered) ) {
 
                 app.layout.currentProjectView._index = projectIndex;
@@ -391,8 +411,11 @@ function(app, Backbone) {
 
                 var sliderIndex = app.layout.currentProjectView.sliderPos;
                 var totalSlides = app.layout.currentProjectView.totalItems;
-                app.layout.currentProjectView.$el.appendTo($el);
-                app.layout.currentProjectView.trigger('afterRender');
+
+                if ($el.is(':empty')) {
+                    app.layout.currentProjectView.$el.appendTo($el);
+                }
+
                 app.eventBus.trigger('tm:checkControls',projectIndex,sliderIndex,totalSlides);
             }
         }

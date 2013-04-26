@@ -630,7 +630,7 @@ $default-height-page: 410px;
 .browser-page{
   //@include debug;
   position:relative;
-  margin: 40px auto;
+  //margin: 40px auto;
   @include size($default-width-page $default-height-page);
 }
 
@@ -643,14 +643,14 @@ $default-height-page: 410px;
   top: -30px;
 }
 .caption{
-    z-index: 1000;
-    display: none;
+    z-index: 100;
+    //display: none;
     background:rgba(#dedede, 0.7);
     @include linear-gradient(to top, rgba(#d0c9c9, 1), rgba(#f7f5f5, 1));
-    height: 275px;
+    height: 14px;
     position:absolute;
     overflow: hidden;
-    bottom: -80px;
+    bottom: -100px;
     right: 25px;
     width: 280px;
     border-radius: 7px;
@@ -662,6 +662,13 @@ $default-height-page: 410px;
     box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.1);
     @include transition (height .2s ease-in-out);
     -webkit-transform: translate3d(0,0,0);
+
+    &.opened{
+      .toggle-caption{
+        visibility: visible;
+      }
+      height: 275px;
+    }
     &.collapsed{
       height: 75px;
        .details {
@@ -674,7 +681,7 @@ $default-height-page: 410px;
       float: right;
       width: 30px;
       height: 30px;
-
+      visibility: hidden;
       text-align: center;
       top: -2px;
       color: #222;
@@ -688,6 +695,8 @@ $default-height-page: 410px;
       span.date{
         font-size:em(12);
         color: #999;
+        display: inline-block;
+        margin-top: 8px;
       }
     }
     p {
@@ -748,8 +757,12 @@ $default-height-page: 410px;
     }
 }
 /*Slides*/
+.rs-wrapper{
+  padding-top: 40px;
+  padding-left: 2px;
+}
 .rs-slider{
-  display: none;
+  //display: none;
 }
 .rs-slider .rs-slide {
   @include size($default-width-page $default-height-page);
@@ -773,12 +786,15 @@ $default-height-page: 410px;
 }
 /*Progress bar*/
 .rs-progress{
-  border-radius:22px;
-  @include linear-gradient(to bottom, #d0c9c9, rgb(219, 212, 212),  #d0c9c9);
+  top: 21px;
+  left:182px;
+  @include prefixer(border-top-left-radius, 20px, spec);
+  @include prefixer(border-bottom-left-radius, 20px, spec);
 }
 .rs-progress .bar{
-  border-radius:22px;
-  background: rgba(#000,1);
+  @include prefixer(border-top-left-radius, 20px, spec);
+  @include prefixer(border-bottom-left-radius, 20px, spec);
+  @include linear-gradient(to top, #00bbff, #3dc3d1);
 }
 
 /* RSlider Css Cusomize */
