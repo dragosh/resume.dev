@@ -37,9 +37,11 @@ function(app, Models, Views) {
             app.projects = new Models.Projects();
             app.projects.fetch();
             app.projects.once('sync',function(collection) {
+                //add model view for each project
                 app.eventBus.trigger('app:addProject',Views,collection);
             },app);
 
+            //Check the routes
             this.on('route', function(route) {
                 if(route === 'index'){
                     $(app.dom.nav).find('li').removeClass('active').first().addClass('active');
@@ -59,36 +61,66 @@ function(app, Models, Views) {
             });
 
         },
+        /*
+        |--------------------------------------------------------------------------
+        | Home route
+        */
         index: function() {
             app.layout.setView(app.dom.page, new Views.Home());
             app.layout.render();
         },
-
+/*
+        |--------------------------------------------------------------------------
+        | Project route
+        */
         projects: function() {
             app.layout.setView(app.dom.page, new Views.Projects({collection: app.projects}));
-
+            //safari issue
             setTimeout(function(){
                 app.layout.render();
             },100);
         },
 
+        /*
+        |--------------------------------------------------------------------------
+        | Experience route
+        */
         experience: function() {
             app.layout.setView(app.dom.page, new Views.Experience());
             app.layout.render();
         },
 
+        /*
+        |--------------------------------------------------------------------------
+        | Skills route
+        */
         skills: function() {
             app.layout.setView(app.dom.page, new Views.Skills());
             app.layout.render();
         },
+
+        /*
+        |--------------------------------------------------------------------------
+        | Education route
+        */
         education: function() {
             app.layout.setView(app.dom.page, new Views.Education());
             app.layout.render();
         },
+
+        /*
+        |--------------------------------------------------------------------------
+        | Contact route
+        */
         contact: function() {
             app.layout.setView(app.dom.page, new Views.Contact());
             app.layout.render();
         },
+
+        /*
+        |--------------------------------------------------------------------------
+        | Just in case
+        */
         error404: function() {
             app.layout.setView(app.dom.page, new Views.Error404());
             app.layout.render();

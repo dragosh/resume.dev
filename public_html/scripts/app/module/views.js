@@ -65,10 +65,12 @@ function(app, Backbone) {
         initialize: function() {
             //init sliders & carousel only after redndering
             this.on('afterRender',function() {
+                //get the project index
                 var projIndex = app.layout.currentProjectView._index;
-
+                // caption  desc
                 var $caption = this.$('.caption');
 
+                //Check the icon toggle function
                 var checkIcon = function() {
                     var $icon = $caption.find('a.toggle-caption');
                     if( ! $caption.hasClass('collapsed') ){
@@ -78,7 +80,7 @@ function(app, Backbone) {
 
                     }
                 };
-
+                // Project Slider Options
                 var sliderOptions =  {
                     autoplay:0,
                     controls: false,
@@ -87,48 +89,54 @@ function(app, Backbone) {
                     maxwidth: 805,
                     maxheight: 410,
                     onInit: function(totalItems,el,sliderObj){
-
+                        //Add the slider Plugin to the BB view object for later use
                         app.layout.currentProjectView.slider = sliderObj;
                         app.layout.currentProjectView.sliderPos = 0;
                         app.layout.currentProjectView.totalItems = totalItems;
 
+                        // Carousel Configuration
                         var carouselOptions = {
                                 itemWidth:          70,
                                 itemHeight:         49,
                                 minWidth:           300,
                                 onInit: function(el,carouselObj){
-
+                                    //Add the carousel PLugin to the BB view object for later use
                                     app.layout.currentProjectView.carousel = carouselObj;
                                 }.bind(this),
                                 onReady: function() {
-                                    //$caption.delay(4000).show();
+                                    //Show the caption with a little bit of delay
                                     setTimeout(function(){
                                         $caption.addClass('opened');
                                     },1500);
                                 }.bind(this),
                                 onSelected: function(pos){
-
+                                    // get the slider position
                                     app.layout.currentProjectView.sliderPos = pos;
                                     app.layout.currentProjectView.slider.slide(pos);
+                                    //trigger the event to check the controls arrows
                                     app.eventBus.trigger('tm:checkControls',projIndex,pos, app.layout.currentProjectView.totalItems);
                                 }.bind(this)
                             };
 
+                        //Init the carousel
                         this.$('.carousel').rcarousel(carouselOptions);
-                    }.bind(this),
-                    onReady: function() {
 
                     }.bind(this),
+                    onReady: function() {
+                        //all images are loaded in the slider
+                    }.bind(this),
                 };
+
+                //Init the Slider
                 this.$('.rs-slider').rslider(sliderOptions);
-                // icon press
+                // toggle icon press
                 $caption.find('a.toggle-caption').off('click').on('click',function(ev) {
                     $caption.toggleClass('collapsed');
                     checkIcon();
                     ev.preventDefault();
                 }.bind(this));
 
-                //Swipe Event
+                // Caption swiped
                 $caption.swipe( {
                     //Generic swipe handler for all directions
                     swipe:function(ev, direction) {
@@ -151,7 +159,6 @@ function(app, Backbone) {
             };
         },
         clean: function() {
-            console.log('clean');
             this.stopListening();
             this.remove();
         }
@@ -191,7 +198,7 @@ function(app, Backbone) {
             }.bind(this));
             // Swipe navigation
             $(document).swipe( {
-            //Generic swipe handler for all directions
+                //Generic swipe handler for all directions
                 swipe:function(ev, direction) {
                     if(! _.isNull(direction)) {
                         switch(direction){
@@ -271,10 +278,10 @@ function(app, Backbone) {
             app.timeLineView.$el.find('li').siblings().find('a').removeClass('current');
             app.timeLineView.$el.find('li').eq(app.layout.currentProjectView._index).children('a').addClass('current');
         },
-        //
-        afterRender: function() {
 
+        afterRender: function() {
             var space =  Math.floor(app.viewPort.h / this.options.serialize.projects.length) / 2;
+
             setTimeout(function() {
                 this.$el.find('li').css({marginBottom:space, marginTop:space})
                     .last().children('a').addClass('current');
